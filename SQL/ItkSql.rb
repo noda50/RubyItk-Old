@@ -6,7 +6,7 @@ require 'mysql' ;
 require 'parsedate' ;
 require 'date' ;
 
-$LOAD_PATH.push("/home/noda/lib/ruby") ;
+$LOAD_PATH.push("~/lib/ruby") ;
 
 require 'WithConfParam.rb' ;
 require 'Geo2DGml.rb' ;
