@@ -1,0 +1,54 @@
+#! /usr/bin/ruby -d
+## -*- Mode: Ruby -*-
+
+##--------------------------------------------------
+## Usage:
+=begin
+	% itml2html [infile [outfile]]
+
+	Please see itml2.rb for the syntax of itml.
+=end
+
+$LOAD_PATH.push("~/lib/ruby") ;
+require "itml2.rb" ;
+
+#======================================================================
+# MAIN
+
+#--------------------------------------------------
+# getargs
+
+$istr = $stdin ;
+#$ostr = $stdout ;
+$ostr = open("|nkf -j","w") ;
+$test = FALSE ;
+
+if(ARGV.length > 0) then
+  if(ARGV[0] == "--test") then
+    $test = TRUE ;
+  else
+    $istr = File::new(ARGV[0]) ;
+    if(ARGV.length > 1) then
+      #    $ostr = File::new(ARGV[1],"w") ;
+      $ostr = open("|nkf -j > #{ARGV[1]}","w") ;
+    end
+  end
+end
+
+
+#--------------------------------------------------
+# main
+
+processor = ItmlProcessor.new() ;
+
+if($test) then
+  result = processor.mainWithString($ItmlSampleData);
+  $stdout << result ;
+else
+  processor.mainWithStreamWithHtmlHeader($istr,$ostr) ;
+end
+
+
+
+
+

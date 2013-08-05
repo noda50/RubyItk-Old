@@ -1,0 +1,37 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+require 'getoptlong.rb' ;
+require 'sexp.rb' ;
+
+##======================================================================
+## recursive Assoc
+
+def recursiveAssoc(s,keyarray,index)
+  if(index >= keyarray.length)
+    return s ;
+  else
+    key = keyarray[index] ;
+    entry = s.assoc(key) ;
+    if(entry.nil?)
+      return entry ;
+    else
+      recursiveAssoc(entry,keyarray,index+1) ;
+    end
+  end
+end
+
+##======================================================================
+## main
+
+$keylist = ARGV ;
+
+while(s = Sexp::scanStream($stdin)) 
+  ss = Sexp::list(s) ;
+  
+  entry = recursiveAssoc(ss,$keylist,0) ;
+  if(!entry.nil?) then
+    $stdout << entry << "\n" ;
+  end
+end
+

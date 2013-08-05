@@ -1,0 +1,177 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push(File::dirname($0)) ;
+
+require 'Geo2D.rb' ;
+include Geo2D ;
+
+
+$mode = 6 ;
+
+##----------------------------------------------------------------------
+def test6()
+  poly = Geo2D::Polygon::newByXY([ [-10.0,  0.0],
+                                   [  0.0, 10.0],
+                                   [ 10.0,  0.0],
+                                   [  0.0,-10.0] ],
+                                 [ [ [-1.0,-1.0],
+                                     [-1.0, 0.0],
+                                     [ 0.0, 0.0],
+                                     [ 0.0,-1.0] ],
+                                   [ [ 3.0, 2.0],
+                                     [ 2.0, 1.0],
+                                     [ 1.0, 2.0],
+                                     [ 2.0, 3.0] ] ]) ;
+
+  p(poly.to_s) ;
+end
+
+##----------------------------------------------------------------------
+def test5()
+  lstring = Geo2D::LineString::newByXY([ [-1.0, 0.0],
+                                         [ 0.0, 1.0],
+                                         [ 1.0, 0.0],
+                                         [ 0.0,-1.0] ]) ;
+
+  p(lstring.to_s) ;
+  p(lstring.bbox.to_s) ;
+  lstring.eachLine{|line|
+    p(line.to_s) ;
+  }
+
+  line0 = Geo2D::LineSegment::newByXY(  0.0,  0.0, 10.0, 10.0) ;
+  line1 = Geo2D::LineSegment::newByXY(-10.0,-10.0, 10.0, 10.0) ;
+  line2 = Geo2D::LineSegment::newByXY(-10.0, 10.0, 10.0, 10.0) ;
+
+  p([:line0, lstring.countCrossingWithLine(line0)]) ;
+  p([:line1, lstring.countCrossingWithLine(line1)]) ;
+  p([:line2, lstring.countCrossingWithLine(line2)]) ;
+  
+  ring = Geo2D::LinearRing::newByXY([ [-1.0, 0.0],
+				      [ 0.0, 1.0],
+				      [ 1.0, 0.0],
+				      [ 0.0,-1.0] ]) ;
+
+  p(ring.to_s) ;
+  ring.eachLine{|line|
+    p(line.to_s) ;
+  }
+
+  p([:line0, ring.countCrossingWithLine(line0)]) ;
+  p([:line1, ring.countCrossingWithLine(line1)]) ;
+  p([:line2, ring.countCrossingWithLine(line2)]) ;
+
+  p0 = Geo2D::Point.new(0.0,0.0) ;
+  p1 = Geo2D::Point.new(2.0,0.5) ;
+
+  p([:p0, p0.to_s]) ;
+  p([:p1, p1.to_s]) ;
+
+  ring.eachLine{|line|  p([:p0, line.isLeft?(p0), line.isRight?(p0)]) ; }
+  ring.eachLine{|line|  p([:p1, line.isLeft?(p1), line.isRight?(p1)]) ; }
+
+
+end
+
+##----------------------------------------------------------------------
+def test4()
+  line0 = Geo2D::LineSegment::newByXY(0.0,0.0,1.0,1.0) ;
+  line1 = Geo2D::LineSegment::newByXY(0.0,1.0,1.0,0.0) ;
+  line2 = Geo2D::LineSegment::newByXY(1.0,0.0,2.0,1.5) ;
+  line3 = Geo2D::LineSegment::newByXY(0.1,0.1,0.2,0.2) ;
+  line4 = Geo2D::LineSegment::newByXY(1.0,0.0,2.0,1.0) ;
+  line5 = Geo2D::LineSegment::newByXY(0.5,0.5,0.5,0.5) ;
+  line6 = Geo2D::LineSegment::newByXY(0.4,0.5,0.4,0.5) ;
+
+  p([:line0,line0.to_s]) ;
+  p([:line1,line1.to_s]) ;
+  p([:line2,line2.to_s]) ;
+  p([:line3,line3.to_s]) ;
+  p([:line4,line4.to_s]) ;
+  p([:line5,line5.to_s]) ;
+  p([:line6,line6.to_s]) ;
+
+  p([:line0,:line1,line0.crossWithLine?(line1)]) ;
+  p([:line0,:line2,line0.crossWithLine?(line2)]) ;
+  p([:line1,:line0,line1.crossWithLine?(line0)]) ;
+  p([:line1,:line2,line1.crossWithLine?(line2)]) ;
+  p([:line2,:line0,line2.crossWithLine?(line0)]) ;
+  p([:line2,:line1,line2.crossWithLine?(line1)]) ;
+
+  p([:line0,:line3,line0.crossWithLine?(line3)]) ;
+  p([:line0,:line4,line0.crossWithLine?(line4)]) ;
+  p([:line0,:line4,line0.crossWithLine?(line4)]) ;
+  p([:line3,:line0,line3.crossWithLine?(line0)]) ;
+  p([:line5,:line0,line5.crossWithLine?(line0)]) ;
+  p([:line6,:line0,line6.crossWithLine?(line0)]) ;
+
+  
+end
+
+##----------------------------------------------------------------------
+def test3()
+  x = Geo2D::min(3,1,4,5,6) ;
+  y = Geo2D::max(5,7) ;
+  p([x,y]) ;
+end
+
+##----------------------------------------------------------------------
+module Foo2
+  module Bar
+    def bar()
+      p(:Foo2_Bar_bar) ;
+    end
+  end
+  class Baz
+    include Bar ;
+    def baz()
+      p(:Foo2_Baz_baz) ;
+      bar() ;
+    end
+  end
+end
+
+def test2()
+  f = Foo2::Baz::new ; 
+  f.bar() ;
+  f.baz() ;
+end
+
+##----------------------------------------------------------------------
+def test1()
+  l = LineSegment.newByXY(1.0, 0.0, 0.0, 1.0) ;
+  p(l.to_s) ;
+
+  v = Vector::new(1.0,1.0) ;
+  p(l.footPointRatioFrom(v)) ;
+  p(l.footPointFrom(v)) ;
+  p(l.distanceFromPoint(v)) ;
+
+  v = Vector::new(3.0,1.0) ;
+  p(l.footPointRatioFrom(v)) ;
+  p(l.footPointFrom(v)) ;
+  p(l.distanceFromPoint(v)) ;
+end
+##----------------------------------------------------------------------
+def test0()
+  v = Vector::new(10,20) ;
+  p(v.to_s) ;
+
+  u = Vector::newByPolar(20,3) ;
+  p(u.to_s) ;
+
+  p(u.unit.to_s) ;
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+form = ("test%s()" % $mode.to_s)
+
+eval(form) ;
+
+
+
+

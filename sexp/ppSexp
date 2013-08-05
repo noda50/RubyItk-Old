@@ -1,0 +1,15 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+##----------------------------------------------------------------------
+$LOAD_PATH.push("~/lib/ruby") ;
+
+require 'sexp.rb' ;
+
+istrm = $stdin ;
+ostrm = $stdout ;
+
+while(!istrm.eof?)
+  sexp = Sexp::scanStream(istrm) ;
+  sexp.pprint(ostrm) if(sexp) ;
+end

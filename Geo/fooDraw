@@ -1,0 +1,42 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push(File::dirname($0)) ;
+$LOAD_PATH.push("~/lib/ruby") ;
+
+require 'Geo2DDraw.rb' ;
+include Geo2D ;
+
+
+$mode = 0 ;
+
+##----------------------------------------------------------------------
+def test0()
+
+  canvas = MyCanvas.new('gtk', 
+			{ 'width'	=> 512,
+			  'height'	=> 512,
+			  'scale'	=> 40,
+			  'centerp'	=> true,
+			  '' 		=> nil}) ;
+  canvas.singlePage("white") {
+    Point::new(1,2).draw(canvas) ;
+    Point::new(-1,2).draw(canvas,{:sizeAbs => 5, :color => 'DarkGreen', :fillp => true}) ;
+    LineSegment::new([-1,-2],[0.5,0.7]).draw(canvas) ;
+    LineString::new([[0,0],[0,1],[1,1],[1,-1],[-1,-1],[-1,2],[2,2]]).draw(canvas) ;
+    Ring::new([[0.5,0],[0.5,3],[3,3],[3,-3],[-3,-3],[-3,5],[5,5]]).draw(canvas) ;
+    Polygon::new([[-4,-3],[-4,-4],[-3,-4]]).draw(canvas) ;
+  }
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+form = ("test%s()" % $mode.to_s)
+
+eval(form) ;
+
+
+
+

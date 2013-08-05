@@ -1,0 +1,93 @@
+#! /usr/bin/env ruby
+## -*- mode: ruby -*-
+
+$LOAD_PATH.push("~/lib/ruby") ;
+$LOAD_PATH.push(".") ;
+
+require 'pp' ;
+
+require 'Geo2DAll' ;
+require 'myCanvas' ;
+
+include Geo2D ;
+
+##----------------------------------------------------------------------
+def genRandomPoint(rangeX, rangeY)
+  (minX, maxX) = rangeX;
+  (minY, maxY) = rangeY ;
+
+  return Point.new(fltRand(minX, maxX), fltRand(minY, maxY)) ;
+end
+
+##----------------------------------------------------------------------
+def genRandomPointN(n,rangeX, rangeY)
+  list = [] ;
+  (0...n).each{|i|
+    list.push(genRandomPoint(rangeX, rangeY)) ;
+  }
+  return list ;
+end
+
+##----------------------------------------------------------------------
+#def showPointList(canvas, pointList, size=1.0)
+def showPointList(canvas, pointList, size=0.2)
+  pointList.each{|point|
+    canvas.drawFilledCircle(point.x, point.y, size, "black") ;
+  }
+end
+
+########################################################################
+########################################################################
+########################################################################
+
+$range = 100.0 ;
+$scale = 5 ;
+$rangeX = [-$range/2.0, $range/2.0] ;
+$rangeY = [-$range/2.0, $range/2.0] ;
+$nPoint = 100 ;
+#$nPoint = 10000 ;
+
+pointList = genRandomPointN($nPoint, $rangeX, $rangeY) ;
+
+canvas = MyCanvas.new('gtk', 
+                      { 'width' 	=> $range * $scale,
+                        'height' 	=> $range * $scale,
+                        'scale'		=> $scale,
+                        'centerp'	=> true,
+                        nil		=> nil}) ;
+
+$canvas = canvas; 
+
+##----------------------------------------
+def showGrid(canvas)
+  canvas.drawSolidLine($rangeX[0],0,$rangeX[1],0,1,"green") ;
+  canvas.drawSolidLine(0,$rangeY[0],0,$rangeY[1],1,"green") ;
+end
+
+##----------------------------------------
+canvas.multiPage() {
+  p :showPointList ;
+  canvas.page("white") {
+    showGrid(canvas) ;
+    showPointList(canvas, pointList) ;
+  }
+  sleep(1) ;
+
+  p :testConvexHull
+#  convexList = Point::findConvexHullPointList(pointList) ;
+  convexHull = Polygon::newConvexHull(pointList) ;
+
+  canvas.page("white") {
+    showGrid(canvas) ;
+    showPointList(canvas, pointList) ;
+
+    convexHull.draw(canvas, {:fillColor => nil, :frameColor => 'red'}) ;
+  }
+  sleep(1000) ;
+}
+
+
+            
+
+  
+  

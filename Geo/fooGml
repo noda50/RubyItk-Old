@@ -1,0 +1,193 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push(File::dirname($0)) ;
+$LOAD_PATH.push("~/lib/ruby") ;
+
+require 'Geo2DGml.rb' ;
+include Geo2D ;
+
+$mode = 6 ;
+
+##----------------------------------------------------------------------
+def test6sub(label,obj)
+  $stdout << "[" << label.to_s << "]" << "\n" ;
+
+  str = obj.to_Wkt() ;
+  
+  $stdout << str << "\n" ;
+  obj = GeoObject::scanWkt(str) ;
+  $stdout << obj.to_s << "\n" ;
+  $stdout << obj.to_Wkt() << "\n" ;
+  
+  $stdout << "-" * 60 << "\n" ;
+end
+
+def test6()
+  point = Point::new(3.0,4.0) ; ;
+  point.srsName = "foo" ;
+  test6sub(:point,point) ;
+
+  lstring = LineString::new([[0,1],[1,2],[2,3]]) ;
+  test6sub(:lstring,lstring) ;
+  
+  ring = LinearRing::new([[0,1],[1,2],[2,3]]) ;
+  test6sub(:ring, ring) ;
+
+  poly = Geo2D::Polygon::newByXY([ [-10.0,  0.0],
+                                   [  0.0, 10.0],
+                                   [ 10.0,  0.0],
+                                   [  0.0,-10.0] ],
+                                 [ [ [-1.0,-1.0],
+                                     [-1.0, 0.0],
+                                     [ 0.0, 0.0],
+                                     [ 0.0,-1.0] ],
+                                   [ [ 3.0, 2.0],
+                                     [ 2.0, 1.0],
+                                     [ 1.0, 2.0],
+                                     [ 2.0, 3.0] ] ]) ;
+  test6sub(:poly, poly) ;
+end
+
+##----------------------------------------------------------------------
+def test5sub(label,obj)
+  $stdout << "[" << label.to_s << "]" << "\n" ;
+
+#  str = obj.to_GmlStr(0,true) ;
+  str = obj.to_GmlStr() ;
+  
+  $stdout << str << "\n" ;
+  obj = GeoObject::scanGmlStr(str) ;
+  $stdout << obj.to_s << "\n" ;
+  $stdout << obj.to_GmlStr() << "\n" ;
+  
+  $stdout << "-" * 60 << "\n" ;
+end
+
+def test5()
+  point = Point::new(3.0,4.0) ; ;
+  point.srsName = "foo" ;
+  test5sub(:point,point) ;
+
+  lstring = LineString::new([[0,1],[1,2],[2,3]]) ;
+  test5sub(:lstring,lstring) ;
+  
+  ring = LinearRing::new([[0,1],[1,2],[2,3]]) ;
+  test5sub(:ring, ring) ;
+
+  poly = Geo2D::Polygon::newByXY([ [-10.0,  0.0],
+                                   [  0.0, 10.0],
+                                   [ 10.0,  0.0],
+                                   [  0.0,-10.0] ],
+                                 [ [ [-1.0,-1.0],
+                                     [-1.0, 0.0],
+                                     [ 0.0, 0.0],
+                                     [ 0.0,-1.0] ],
+                                   [ [ 3.0, 2.0],
+                                     [ 2.0, 1.0],
+                                     [ 1.0, 2.0],
+                                     [ 2.0, 3.0] ] ]) ;
+  test5sub(:poly, poly) ;
+end
+
+##----------------------------------------------------------------------
+def test4sub(label,obj)
+  $stdout << "[" << label.to_s << "]" << "\n" ;
+  $stdout << "Gml:" << "\n" ;
+  $stdout << obj.to_GmlStr() << "\n" ;
+  $stdout << "Wkt:" << "\n" ;
+  $stdout << obj.to_Wkt() << "\n" ;
+  $stdout << "-" * 60 << "\n" ;
+end
+
+def test4()
+  point = Point::new(3.0,4.0) ; ;
+  point.srsName = "foo" ;
+  test4sub(:point,point) ;
+
+  lstring = LineString::new([[0,1],[1,2],[2,3]]) ;
+  test4sub(:lstring,lstring) ;
+  
+  ring = LinearRing::new([[0,1],[1,2],[2,3]]) ;
+  test4sub(:ring, ring) ;
+
+  poly = Geo2D::Polygon::newByXY([ [-10.0,  0.0],
+                                   [  0.0, 10.0],
+                                   [ 10.0,  0.0],
+                                   [  0.0,-10.0] ],
+                                 [ [ [-1.0,-1.0],
+                                     [-1.0, 0.0],
+                                     [ 0.0, 0.0],
+                                     [ 0.0,-1.0] ],
+                                   [ [ 3.0, 2.0],
+                                     [ 2.0, 1.0],
+                                     [ 1.0, 2.0],
+                                     [ 2.0, 3.0] ] ]) ;
+  test4sub(:poly, poly) ;
+end
+
+##----------------------------------------------------------------------
+def test3()
+  poly = Geo2D::Polygon::newByXY([ [-10.0,  0.0],
+                                   [  0.0, 10.0],
+                                   [ 10.0,  0.0],
+                                   [  0.0,-10.0] ],
+                                 [ [ [-1.0,-1.0],
+                                     [-1.0, 0.0],
+                                     [ 0.0, 0.0],
+                                     [ 0.0,-1.0] ],
+                                   [ [ 3.0, 2.0],
+                                     [ 2.0, 1.0],
+                                     [ 1.0, 2.0],
+                                     [ 2.0, 3.0] ] ]) ;
+  gml = poly.to_Gml() ;
+  gml.write($stdout, 0) ;
+  $stdout << "\n" ;
+  p(gml.prefix) ;
+
+end
+
+##----------------------------------------------------------------------
+def test2()
+  l = LinearRing::new([[0,1],[1,2],[2,3]]) ;
+  gml = l.to_Gml() ;
+  gml.write($stdout, 0) ;
+  $stdout << "\n" ;
+  p(gml.prefix) ;
+
+end
+
+##----------------------------------------------------------------------
+def test1()
+  l = LineString::new([[0,1],[1,2],[2,3]]) ;
+  gml = l.to_Gml() ;
+  gml.write($stdout, 0) ;
+  $stdout << "\n" ;
+  p(gml.prefix) ;
+
+end
+
+##----------------------------------------------------------------------
+def test0()
+
+  p = Point::new(3.0,4.0) ;
+  gml = p.to_Gml() ;
+  gml.write($stdout, 0) ;
+  $stdout << "\n" ;
+  p(gml.prefix) ;
+  p(p.to_GmlStr()) ;
+  p(p.to_GmlStr(-1)) ;
+
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+form = ("test%s()" % $mode.to_s)
+
+eval(form) ;
+
+
+
+
